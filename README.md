@@ -31,11 +31,11 @@ It is supposed to allow the Opensim install script to access for example `archiv
 * The container opens a bash terminal as user __myuser__ when running. The command `opensim` opens the GUI. It should allow to do all that is planned in the doc (https://opensimconfluence.atlassian.net/wiki/spaces/OpenSim/overview).
 
 ## Notes on options
-* `--shm-size=1g` gives the Docker more X space to run into that the default, which is very small
+* `--shm-size=1g` gives the Docker more shared memory space (a bit of the RAM) to run into that the default, which is very small (64MB) and not sufficient for large GUI
 * For the DNS fix, there must be other/better ways, maybe the option `--network=host` when running docker build (TODO (Louise) test it)?
 * If the `~/opensim_docker_mounted_volume` folder does not exist, it is created when running the Docker for the first time
 
 ## TODOs
-* Explore options (`--network=host` and all those concerning graphical display that were added when debugging the GUI, some might be useless)
+* Explore options (`--network=host` and all those concerning graphical display that were added when debugging the GUI, some might be useless, check that `--shm-size=1g` is still useful)
 * Explore how to reduce the size of the Docker
 * Test the GUI for more than just loading a model and running the simulation under gravity: model scaling, importing a custom model, exporting simulation files.
