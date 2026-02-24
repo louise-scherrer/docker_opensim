@@ -32,7 +32,7 @@ It is supposed to allow the Opensim install script to access for example `archiv
 
 ## Notes on options
 * `--shm-size=1g` gives the Docker more shared memory space (a bit of the RAM) to run into that the default, which is very small (64MB) and not sufficient for large GUI
-* For the DNS fix, there must be other/better ways, maybe the option `--network=host` when running docker build (TODO (Louise) test it)?
+* For the DNS fix, there must be other/better ways, maybe the option `--network=host` when running docker build (TODO (Louise) test it)? See https://docs.docker.com/engine/daemon/troubleshoot/#specify-dns-servers-for-docker
 * If the `~/opensim_docker_mounted_volume` folder does not exist, it is created when running the Docker for the first time
 
 ## TODOs
