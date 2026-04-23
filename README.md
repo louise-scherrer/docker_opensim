@@ -29,6 +29,7 @@ It is supposed to allow the Opensim install script to access for example `archiv
 
 ## Opensim and GUI
 * The container opens a bash terminal as user __myuser__ when running. The command `opensim` opens the GUI. It should allow to do all that is planned in the doc (https://opensimconfluence.atlassian.net/wiki/spaces/OpenSim/overview).
+* Tested so far (and working): loading any model (.osim file), loading any mocap static or dynamic motion recording (.trc file), loading scaling setup files (.xml config files), manually setting up a model scaling, Scale Tool, Inverse Kinematics tool on both scaling (marker placement optim pass) and subsequent motion files, saving scaled models, manual placement of markers, superimposing experimental data and simulated model, getting the files saved in the mounted volume from the host.
 
 ## Notes on options
 * `--shm-size=1g` gives the Docker more shared memory space (a bit of the RAM) to run into that the default, which is very small (64MB) and not sufficient for large GUI
