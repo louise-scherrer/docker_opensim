@@ -72,7 +72,6 @@ RUN ln -sf /opt/opensim-gui/bin/opensim /usr/local/bin/opensim 2>/dev/null || tr
 
 # ---- Entrypoint: fix TMPDIR + GPU group + drop to user ----
 COPY entrypoint.sh .entrypoint.sh
-RUN chmod +x .entrypoint.sh
 
 # Default runtime env for the visualizer temp dir
 ENV TMPDIR=/home/${USERNAME}/.cache/opensim-tmp
