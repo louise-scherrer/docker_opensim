@@ -4,6 +4,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 # ---- Create non-root user ----
 ARG USERNAME=myuser
+ENV USERNAME=${USERNAME}
 ARG UID=1000
 ARG GID=1000
 # --- opensim build
@@ -76,6 +77,6 @@ COPY entrypoint.sh .entrypoint.sh
 # Default runtime env for the visualizer temp dir
 ENV TMPDIR=/home/${USERNAME}/.cache/opensim-tmp
 
-ENTRYPOINT ["/bin/bash", "-c", "/home/${USERNAME}/.entrypoint.sh \"$@\"", "--"]
+ENTRYPOINT [".entrypoint.sh"]
 CMD ["opensim"]
 

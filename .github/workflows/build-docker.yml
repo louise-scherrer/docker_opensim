@@ -36,3 +36,8 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Get compressed image size from its manifest
+        run: |
+          TAG=$(echo "${{ steps.meta.outputs.tags }}" | cut -d',' -f1)
+          docker manifest inspect "$TAG" | jq -r '.config.size + ([.layers[].size] | add)' | numfmt --to=iec

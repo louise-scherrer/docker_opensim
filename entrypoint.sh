@@ -46,6 +46,3 @@ if [[ "${1:-}" == "opensim" ]]; then
 else
   exec gosu "${USERNAME}" "$@"
 fi
-
-# Below hack to give privileges to write on the mounted volume at image run
-sudo chown -R 1000:0 work/  # to add to grant writing privileges in ~/work

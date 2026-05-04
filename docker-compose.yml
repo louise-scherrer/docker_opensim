@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  opensim:
+    image: ghcr.io/louise-scherrer/docker_opensim:main
+    user: "${UID}:${GID}"
+    volumes:
+      - ./work:/home/myuser/work
+      - ./work:/home/${USERNAME}/work
+    tty: true
+    stdin_open: true
