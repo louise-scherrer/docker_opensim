@@ -6,6 +6,9 @@ ENV DEBIAN_FRONTEND=noninteractive
 ARG USERNAME=myuser
 ARG UID=1000
 ARG GID=1000
+# --- opensim build
+ARG GUI_BRANCH=094fa00fdff624d6f7a97e4fc356f69d43220559
+ARG CORE_BRANCH=8c51609d1039f5d536f53678edbfef4d7840774f
 
 # ---- Base + runtime deps (keep minimal but functional) ----
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -46,20 +49,21 @@ ENV HOME=/home/${USERNAME}
 
 # ---- Build OpenSim GUI from upstream build script ----
 USER ${USERNAME}
-WORKDIR /home/${USERNAME}/src
+WORKDIR /home/${USERNAME}
 
 # Fetch + run build script; answer "yes" to the two ln overwrite prompts. 
- RUN set -eux; \
-    curl -L -o opensim-gui-linux-build-script.sh \
-      https://raw.githubusercontent.com/opensim-org/opensim-gui/refs/heads/main/scripts/build/opensim-gui-linux-build-script.sh; \
-    chmod +x opensim-gui-linux-build-script.sh; \
-    yes | ./opensim-gui-linux-build-script.sh
+ RUN set -eux \
+    && curl -L -o opensim-gui-linux-build-script.sh \
+      https://raw.githubusercontent.com/opensim-org/opensim-gui/refs/heads/main/scripts/build/opensim-gui-linux-build-script.sh \
+    && sed -i "s/^GUI_BRANCH=.*/GUI_BRANCH=\"${GUI_BRANCH}\"/" opensim-gui-linux-build-script.sh \
+    && sed -i "s/^CORE_BRANCH=.*/CORE_BRANCH=\"${CORE_BRANCH}\"/" opensim-gui-linux-build-script.sh \
+    && chmod +x opensim-gui-linux-build-script.sh; \
+    yes | ./opensim-gui-linux-build-script.sh \
+    # cleanup build and source
+    && rm -rf ~/opensim-workspace;
 
-# Optionally clone models (useful for demos)
-RUN git clone --depth 1 https://github.com/opensim-org/opensim-models.git /home/${USERNAME}/opensim-models || true
-
-# Switch back to root to install entrypoint
-USER root
+# Clone models (useful for demos)
+RUN git clone --depth 1 https://github.com/opensim-org/opensim-models.git /home/${USERNAME}/opensim-models
 
 # Try to expose OpenSim on PATH in a robust way.
 # (If the script already installs /usr/local/bin/opensim, this is harmless.)
@@ -67,12 +71,12 @@ RUN ln -sf /opt/opensim-gui/bin/opensim /usr/local/bin/opensim 2>/dev/null || tr
  && ln -sf /opt/opensim-gui/bin/opensim /usr/local/bin/OpenSim 2>/dev/null || true
 
 # ---- Entrypoint: fix TMPDIR + GPU group + drop to user ----
-COPY entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod +x /usr/local/bin/entrypoint.sh
+COPY entrypoint.sh .entrypoint.sh
+RUN chmod +x .entrypoint.sh
 
 # Default runtime env for the visualizer temp dir
 ENV TMPDIR=/home/${USERNAME}/.cache/opensim-tmp
 
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+ENTRYPOINT ["/bin/bash", "-c", "/home/${USERNAME}/.entrypoint.sh \"$@\"", "--"]
 CMD ["opensim"]
 
