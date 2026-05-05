@@ -6,8 +6,8 @@ TMPDIR="${TMPDIR:-/home/${USERNAME}/.cache/opensim-tmp}"
 
 # Ensure TMPDIR exists and is writable by the user (JxBrowser extraction relies on this).
 mkdir -p "${TMPDIR}"
-chown -R "${USERNAME}:${USERNAME}" "${TMPDIR}"
-chmod 700 "${TMPDIR}" || true
+sudo chown -R "${USERNAME}:${USERNAME}" "${TMPDIR}"
+sudo chmod 700 "${TMPDIR}" || true
 
 # If the host GPU is passed through, automatically add user to the render group GID.
 # This avoids hardcoding "--group-add 992" on the host.
@@ -17,16 +17,16 @@ if ls /dev/dri/renderD* >/dev/null 2>&1; then
 
   # Create a named group for that GID (if not already present)
   if ! getent group "${RENDER_GID}" >/dev/null 2>&1; then
-    groupadd -g "${RENDER_GID}" renderhost 2>/dev/null || true
+    sudo groupadd -g "${RENDER_GID}" renderhost 2>/dev/null || true
   fi
 
   # Add user to the numeric render group
-  usermod -aG "${RENDER_GID}" "${USERNAME}" 2>/dev/null || true
+  sudo usermod -aG "${RENDER_GID}" "${USERNAME}" 2>/dev/null || true
 fi
 
 # Also add to video if it exists (often needed for card* nodes)
 if getent group video >/dev/null 2>&1; then
-  usermod -aG video "${USERNAME}" 2>/dev/null || true
+  sudo usermod -aG video "${USERNAME}" 2>/dev/null || true
 fi
 
 # If "opensim" isn't found but ./opensim exists in common install location, run it.
