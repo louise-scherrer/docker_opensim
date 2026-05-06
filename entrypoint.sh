@@ -33,16 +33,16 @@ fi
 # Otherwise, run the requested command.
 if [[ "${1:-}" == "opensim" ]]; then
   if command -v opensim >/dev/null 2>&1; then
-    exec gosu "${USERNAME}" opensim
+    exec opensim
   elif [[ -x /opt/opensim-gui/bin/opensim ]]; then
-    exec gosu "${USERNAME}" /opt/opensim-gui/bin/opensim
+    exec /opt/opensim-gui/bin/opensim
   elif [[ -x /opt/opensim-gui/opensim ]]; then
-    exec gosu "${USERNAME}" /opt/opensim-gui/opensim
+    exec /opt/opensim-gui/opensim
   else
     echo "ERROR: cannot find OpenSim executable (opensim)." >&2
     echo "Tried: opensim in PATH, /opt/opensim-gui/bin/opensim" >&2
     exit 127
   fi
 else
-  exec gosu "${USERNAME}" "$@"
+  exec "$@"
 fi
