@@ -1,11 +1,13 @@
-version: '3.8'
-
 services:
   opensim:
     image: ghcr.io/louise-scherrer/docker_opensim:main
-    user: "${UID}:${GID}"
+    environment:
+      DISPLAY=${DISPLAY}
+      PUID=${PUID}
+      PGID=${PGID}
     volumes:
-      - ./work:/home/myuser/work
-      - ./work:/home/${USERNAME}/work
+      - /tmp/.X11-unix:/tmp/X11-unix
+      - ~/.Xauthority:/root/.Xauthority
+      - ./work:/home/${USERNAME}/Documents
     tty: true
     stdin_open: true
