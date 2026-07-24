@@ -1,13 +1,22 @@
+x-opensim-common: &opensim-common
+  environment:
+    DISPLAY: ${DISPLAY}
+    PUID: ${PUID}
+    PGID: ${PGID}
+  volumes:
+    - /tmp/.X11-unix:/tmp/.X11-unix
+    - ./work:/home/myuser/Documents
+  tty: true
+  stdin_open: true
+
 services:
   opensim:
+    <<: *opensim-common
     image: ghcr.io/louise-scherrer/docker_opensim:main
-    environment:
-      DISPLAY=${DISPLAY}
-      PUID=${PUID}
-      PGID=${PGID}
-    volumes:
-      - /tmp/.X11-unix:/tmp/X11-unix
-      - ~/.Xauthority:/root/.Xauthority
-      - ./work:/home/${USERNAME}/Documents
-    tty: true
-    stdin_open: true
+
+  opensim-dev:
+    <<: *opensim-common
+    build:
+      context: .
+      args:
+        NUM_JOBS: ${NUM_JOBS:-4}
