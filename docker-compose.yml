@@ -20,3 +20,5 @@ services:
       context: .
       args:
         NUM_JOBS: ${NUM_JOBS:-4}
+        UID: ${PUID}
+        GID: ${PGID}

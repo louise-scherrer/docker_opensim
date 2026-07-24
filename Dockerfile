@@ -45,7 +45,7 @@ ENV LC_ALL=en_US.UTF-8
 
 
 # ---- Create non-root user ----
-RUN groupadd -g ${GID} ${USERNAME} \
+RUN getent group ${GID} || groupadd -g ${GID} ${USERNAME} \
  && useradd -m -u ${UID} -g ${GID} -s /bin/bash ${USERNAME} \
  && usermod -aG sudo ${USERNAME} \
  && echo "${USERNAME} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/${USERNAME} \
@@ -57,18 +57,18 @@ ENV HOME=/home/${USERNAME}
 
 # ---- Build OpenSim GUI from upstream build script ----
 USER ${USERNAME}
-WORKDIR /home/${USERNAME}
+WORKDIR /home/${USERNAME}/opensim-workspace
 
 # Fetch + run build script; answer "yes" to the two ln overwrite prompts. 
- RUN set -eux \
-    && curl -L -o opensim-gui-linux-build-script.sh \
-      https://raw.githubusercontent.com/opensim-org/opensim-gui/refs/heads/main/scripts/build/opensim-gui-linux-build-script.sh \
-    && sed -i "s/^GUI_BRANCH=.*/GUI_BRANCH=\"${GUI_BRANCH}\"/" opensim-gui-linux-build-script.sh \
-    && sed -i "s/^CORE_BRANCH=.*/CORE_BRANCH=\"${CORE_BRANCH}\"/" opensim-gui-linux-build-script.sh \
-    && chmod +x opensim-gui-linux-build-script.sh; \
-    yes | ./opensim-gui-linux-build-script.sh \
-    # cleanup build and source
-    && rm -rf ~/opensim-workspace;
+RUN set -eux \
+   && curl -L -o opensim-gui-linux-build-script.sh \
+     https://raw.githubusercontent.com/opensim-org/opensim-gui/refs/heads/main/scripts/build/opensim-gui-linux-build-script.sh \
+   && sed -i "s/^GUI_BRANCH=.*/GUI_BRANCH=\"${GUI_BRANCH}\"/" opensim-gui-linux-build-script.sh \
+   && sed -i "s/^CORE_BRANCH=.*/CORE_BRANCH=\"${CORE_BRANCH}\"/" opensim-gui-linux-build-script.sh \
+   && chmod +x opensim-gui-linux-build-script.sh; \
+   yes | ./opensim-gui-linux-build-script.sh \
+   # cleanup build and source
+   && rm -rf ~/opensim-workspace;
 
 # Clone models (useful for demos)
 RUN git clone --depth 1 https://github.com/opensim-org/opensim-models.git /home/${USERNAME}/opensim-models
