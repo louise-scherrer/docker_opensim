@@ -67,8 +67,11 @@ RUN set -eux \
    && sed -i "s/^CORE_BRANCH=.*/CORE_BRANCH=\"${CORE_BRANCH}\"/" opensim-gui-linux-build-script.sh \
    && chmod +x opensim-gui-linux-build-script.sh; \
    yes | ./opensim-gui-linux-build-script.sh \
-   # cleanup build and source
-   && rm -rf ~/opensim-workspace;
+   && rm -rf ~/opensim-workspace \
+   && rm -rf ~/opensim-core ~opensim-workspace ~/netbeans-12.3 ~/swig;
+
+RUN rm -rf ~/opensim-workspace
+WORKDIR /home/${USERNAME}
 
 # Clone models (useful for demos)
 RUN git clone --depth 1 https://github.com/opensim-org/opensim-models.git /home/${USERNAME}/opensim-models
